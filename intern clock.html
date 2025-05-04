@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Clock & Stopwatch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #e0e0e0;
+      --glass-bg: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.25);
+      --text-color: #fff;
+      --primary-color: #4e9af1;
+      --button-hover: #5baaff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-color);
+    }
+
+    .container {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .clock {
+      font-size: 3em;
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+
+    .stopwatch {
+      font-size: 2em;
+      margin-top: 20px;
+    }
+
+    .stopwatch span {
+      display: block;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 1em;
+      margin: 0 10px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 500px) {
+      .clock {
+        font-size: 2em;
+      }
+
+      .stopwatch {
+        font-size: 1.5em;
+      }
+
+      button {
+        margin: 5px;
+        padding: 8px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="clock" class="clock">--:--:--</div>
+
+    <div class="stopwatch">
+      <span id="time">00:00:00</span>
+      <div>
+        <button id="startStopBtn">Start</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Digital Clock
+    function updateClock() {
+      const clock = document.getElementById('clock');
+      const time = new Date();
+      clock.innerText = time.toLocaleTimeString();
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Stopwatch
+    let stopwatchInterval;
+    let elapsedTime = 0;
+    let running = false;
+
+    const startStopBtn = document.getElementById('startStopBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const stopwatchDisplay = document.getElementById('time');
+
+    startStopBtn.addEventListener('click', function() {
+      if (running) {
+        clearInterval(stopwatchInterval);
+        startStopBtn.innerText = 'Start';
+      } else {
+        stopwatchInterval = setInterval(updateStopwatch, 1000);
+        startStopBtn.innerText = 'Stop';
+      }
+      running = !running;
+    });
+
+    resetBtn.addEventListener('click', function() {
+      clearInterval(stopwatchInterval);
+      elapsedTime = 0;
+      stopwatchDisplay.innerText = '00:00:00';
+      startStopBtn.innerText = 'Start';
+      running = false;
+    });
+
+    function updateStopwatch() {
+      elapsedTime++;
+      const hours = Math.floor(elapsedTime / 3600);
+      const minutes = Math.floor((elapsedTime % 3600) / 60);
+      const seconds = elapsedTime % 60;
+      stopwatchDisplay.innerText = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+    }
+
+    function pad(num) {
+      return num < 10 ? '0' + num : num;
+    }
+  </script>
+</body>
+</html>
